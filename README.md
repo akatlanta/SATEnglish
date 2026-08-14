@@ -4,16 +4,22 @@ A free, single-page practice site for the digital SAT Reading & Writing section.
 
 ## What's inside
 
-60 original practice questions across 8 sets, covering all four SAT Reading & Writing domains:
+**Practice by Category** — 60 original questions across 8 sets, covering all four SAT Reading & Writing domains:
 
 - **Information and Ideas** — Central Ideas & Details, Command of Evidence, Inferences
 - **Craft and Structure** — Words in Context, Text Structure & Purpose, Cross-Text Connections
 - **Expression of Ideas** — Rhetorical Synthesis, Transitions
 - **Standard English Conventions** — Boundaries, Form/Structure/Sense
 
-Plus a "Full Mixed Practice" mode that shuffles all 60 questions together.
+**Full Mixed Practice** — 5 independent 60-question practice tests (300 questions total), each shuffled across all four domains and covering completely different content:
 
-Each question gives instant right/wrong feedback with an explanation, and each set ends with a score summary and full answer review.
+- **Set 1** — the original 60 category questions above
+- **Set 2** — natural sciences & the environment
+- **Set 3** — history & social studies
+- **Set 4** — arts, literature & language
+- **Set 5** — technology, business & everyday life
+
+Each question gives instant right/wrong feedback with an explanation, and each set ends with a score summary and full answer review. Answer-choice order is randomized on every page load so the correct answer isn't predictably in the same position.
 
 **Note:** scores/progress are session-only (kept in memory) and reset on page reload — there's no backend or database.
 
@@ -31,7 +37,7 @@ This is a static site, so it can be hosted anywhere that serves static files:
 
 ## Adding more questions
 
-All question data lives in the `QUESTIONS` array inside `index.html` (search for `QUESTIONS.push`). Each question is a plain JS object:
+Each question is a plain JS object:
 
 ```js
 { set:'s1', tag:'Central Ideas & Details',
@@ -42,4 +48,6 @@ All question data lives in the `QUESTIONS` array inside `index.html` (search for
   explanation:`...` }
 ```
 
-Push more objects with an existing `set` id (`s1`–`s8`) to add questions to that set — the site groups and counts them automatically. To add a new set entirely, add an entry to the `SETS` array and give your new questions that set's `id`.
+**Category sets:** live in the `QUESTIONS` array (search for `QUESTIONS.push`). Push more objects with an existing `set` id (`s1`–`s8`) to add to that set — the site groups and counts them automatically. To add a new category set, add an entry to the `SETS` array and give your new questions that set's `id`.
+
+**Mixed practice sets:** `MIX2`, `MIX3`, `MIX4`, `MIX5` are separate 60-item arrays (search for `const MIX2 =`, etc.), each with all objects tagged `set:'mix2'` / `'mix3'` / etc. `mix1` isn't a separate array — it's just the original 60 `QUESTIONS`. To add a 6th mixed set: create a new `MIX6` array, add it to `MIX_POOLS`, and add a matching entry to `MIXED_SETS`.
