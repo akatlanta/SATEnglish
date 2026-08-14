@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAT English Practice | Reading & Writing</title>
+<style>
+  :root{
+    --blue:#2554c7;
+    --blue-dark:#1a3d94;
+    --purple:#7c3aed;
+    --green:#0f9d58;
+    --amber:#d97706;
+    --ink:#1c2331;
+    --ink-soft:#525a6b;
+    --bg:#f4f6fb;
+    --card:#ffffff;
+    --border:#e2e6ef;
+    --good:#0f9d58;
+    --good-bg:#e8f8ee;
+    --bad:#d64545;
+    --bad-bg:#fdecec;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+  }
+  .topbar{
+    background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+    color:#fff;
+    padding:18px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 2px 10px rgba(20,40,90,0.15);
+  }
+  .brand{display:flex;align-items:center;gap:12px;cursor:pointer;}
+  .brand .logo{
+    width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.15);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;
+  }
+  .brand h1{font-size:19px;margin:0;font-weight:700;letter-spacing:0.2px;}
+  .brand span{font-size:12px;opacity:0.85;display:block;font-weight:400;}
+  .session-stats{font-size:13px;opacity:0.9;text-align:right;line-height:1.4;}
+
+  .container{
+    max-width:980px;
+    margin:0 auto;
+    padding:32px 20px 60px;
+  }
+
+  .section-title{font-size:22px;font-weight:700;margin:0 0 6px;}
+  .section-sub{color:var(--ink-soft);margin:0 0 26px;font-size:14.5px;}
+
+  .domain-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:18px;
+    margin-bottom:30px;
+  }
+  .domain-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:20px;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+    border-top:4px solid var(--accent, var(--blue));
+  }
+  .domain-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(30,45,90,0.10);}
+  .domain-card h3{margin:0 0 8px;font-size:17px;}
+  .domain-card p{margin:0 0 12px;color:var(--ink-soft);font-size:13.5px;line-height:1.45;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+  .chip{
+    font-size:11.5px;background:var(--bg);border:1px solid var(--border);
+    padding:3px 9px;border-radius:999px;color:var(--ink-soft);
+  }
+  .domain-progress{font-size:12.5px;color:var(--ink-soft);}
+  .domain-progress b{color:var(--ink);}
+
+  .mixed-cta{
+    display:flex;align-items:center;justify-content:space-between;
+    background:linear-gradient(135deg,#1c2331,#333d54);
+    color:#fff;border-radius:var(--radius);padding:20px 24px;margin-bottom:8px;
+  }
+  .mixed-cta h3{margin:0 0 4px;font-size:16.5px;}
+  .mixed-cta p{margin:0;font-size:13px;opacity:0.85;}
+
+  .btn{
+    border:none;border-radius:9px;padding:10px 18px;font-size:14px;font-weight:600;
+    cursor:pointer;transition:opacity .15s ease, transform .1s ease;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--blue);color:#fff;}
+  .btn-primary:hover{opacity:0.9;}
+  .btn-ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--border);}
+  .btn-ghost:hover{background:var(--bg);}
+  .btn-light{background:rgba(255,255,255,0.15);color:#fff;}
+  .btn-light:hover{background:rgba(255,255,255,0.25);}
+  .btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+  .back-link{
+    display:inline-flex;align-items:center;gap:6px;color:var(--blue);
+    font-size:13.5px;font-weight:600;cursor:pointer;margin-bottom:18px;background:none;border:none;padding:0;
+  }
+  .back-link:hover{text-decoration:underline;}
+
+  .set-list{display:flex;flex-direction:column;gap:12px;}
+  .set-row{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .set-row .info h4{margin:0 0 4px;font-size:15px;}
+  .set-row .info p{margin:0;font-size:12.5px;color:var(--ink-soft);}
+  .set-row .right{display:flex;align-items:center;gap:14px;}
+  .best-score{font-size:12px;color:var(--ink-soft);text-align:right;min-width:70px;}
+  .best-score b{display:block;color:var(--ink);font-size:14px;}
+
+  /* Quiz screen */
+  .quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .quiz-title{font-size:14px;font-weight:700;color:var(--ink-soft);}
+  .progress-track{
+    height:8px;background:var(--border);border-radius:999px;overflow:hidden;margin-bottom:22px;
+  }
+  .progress-fill{height:100%;background:var(--blue);border-radius:999px;transition:width .25s ease;}
+
+  .q-card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:26px;margin-bottom:18px;
+  }
+  .q-tag{
+    display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;
+    color:var(--blue);background:#eaf0fe;padding:4px 10px;border-radius:999px;margin-bottom:14px;
+  }
+  .passage{
+    background:var(--bg);border-left:3px solid var(--border);padding:14px 18px;border-radius:8px;
+    font-size:14.5px;line-height:1.65;margin-bottom:18px;color:#2b3245;
+  }
+  .passage.two-text{display:flex;flex-direction:column;gap:12px;}
+  .passage .label{font-weight:700;font-size:11.5px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px;display:block;}
+  .stem{font-size:15.5px;font-weight:600;margin-bottom:18px;line-height:1.5;}
+  .choices{display:flex;flex-direction:column;gap:10px;}
+  .choice{
+    display:flex;align-items:flex-start;gap:12px;text-align:left;
+    border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;
+    background:#fff;cursor:pointer;font-size:14.5px;line-height:1.5;color:var(--ink);
+  }
+  .choice:hover{border-color:var(--blue);background:#f7f9ff;}
+  .choice .letter{
+    flex:0 0 24px;height:24px;border-radius:50%;background:var(--bg);border:1.5px solid var(--border);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--ink-soft);
+  }
+  .choice.selected{border-color:var(--blue);background:#eaf0fe;}
+  .choice.correct{border-color:var(--good);background:var(--good-bg);}
+  .choice.correct .letter{background:var(--good);color:#fff;border-color:var(--good);}
+  .choice.incorrect{border-color:var(--bad);background:var(--bad-bg);}
+  .choice.incorrect .letter{background:var(--bad);color:#fff;border-color:var(--bad);}
+  .choice.disabled{cursor:default;}
+  .choice.dim{opacity:0.55;}
+
+  .feedback{
+    margin-top:18px;padding:16px 18px;border-radius:10px;font-size:14px;line-height:1.6;
+  }
+  .feedback.good{background:var(--good-bg);color:#0b6b3d;}
+  .feedback.bad{background:var(--bad-bg);color:#a02f2f;}
+  .feedback b{display:block;margin-bottom:4px;font-size:13.5px;}
+
+  .quiz-footer{display:flex;justify-content:flex-end;gap:10px;}
+
+  /* Results */
+  .result-hero{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:34px;text-align:center;margin-bottom:22px;
+  }
+  .score-big{font-size:46px;font-weight:800;margin:8px 0 4px;}
+  .score-sub{color:var(--ink-soft);font-size:14px;margin-bottom:18px;}
+  .result-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+  .review-item{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;
+  }
+  .review-item .tag-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .status-pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;}
+  .status-pill.good{background:var(--good-bg);color:var(--good);}
+  .status-pill.bad{background:var(--bad-bg);color:var(--bad);}
+  .review-item .stem{font-size:14.5px;margin-bottom:10px;}
+  .review-line{font-size:13.5px;margin:4px 0;color:var(--ink-soft);}
+  .review-line b{color:var(--ink);}
+  .review-explain{margin-top:8px;font-size:13.5px;background:var(--bg);padding:10px 14px;border-radius:8px;color:#2b3245;}
+
+  .hidden{display:none !important;}
+
+  footer{text-align:center;color:var(--ink-soft);font-size:12px;padding:24px 0 10px;}
+
+  @media (max-width:600px){
+    .topbar{padding:14px 16px;}
+    .session-stats{display:none;}
+    .container{padding:22px 14px 50px;}
+    .q-card{padding:18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand" onclick="goHome()">
+    <div class="logo">SP</div>
+    <div>
+      <h1>SAT Prep</h1>
+      <span>Reading &amp; Writing Practice</span>
+    </div>
+  </div>
+  <div class="session-stats" id="sessionStats">Sets completed this session: 0</div>
+</div>
+
+<div class="container" id="app"></div>
+
+<footer>Original practice questions modeled on the digital SAT Reading &amp; Writing section. Not affiliated with College Board.</footer>
+
+<script>
+/* ============ DATA ============ */
+// SETS metadata. `questions` filled in below, one domain at a time.
+const DOMAINS = [
+  { id:'d1', name:'Information and Ideas', color:'#2554c7',
+    blurb:'Find central ideas, use evidence, and draw logical inferences from a text.',
+    subtopics:['Central Ideas & Details','Command of Evidence','Inferences'] },
+  { id:'d2', name:'Craft and Structure', color:'#7c3aed',
+    blurb:'Interpret word choice, analyze structure/purpose, and connect ideas across two texts.',
+    subtopics:['Words in Context','Text Structure & Purpose','Cross-Text Connections'] },
+  { id:'d3', name:'Expression of Ideas', color:'#0f9d58',
+    subtitle:'',
+    blurb:'Synthesize notes rhetorically and choose transitions that connect ideas logically.',
+    subtopics:['Rhetorical Synthesis','Transitions'] },
+  { id:'d4', name:'Standard English Conventions', color:'#d97706',
+    blurb:'Apply grammar rules: sentence boundaries and correct form, structure, and sense.',
+    subtopics:['Boundaries','Form / Structure / Sense'] },
+];
+
+const SETS = [
+  { id:'s1', domain:'d1', title:'Set 1: Central Ideas & Details', desc:'Identify the main point and key supporting details of a passage.' },
+  { id:'s2', domain:'d1', title:'Set 2: Command of Evidence & Inferences', desc:'Use textual/quantitative evidence and draw logical inferences.' },
+  { id:'s3', domain:'d2', title:'Set 3: Words in Context', desc:'Determine the most precise meaning of a word or phrase as used in context.' },
+  { id:'s4', domain:'d2', title:'Set 4: Text Structure & Cross-Text Connections', desc:'Analyze how a passage is built, and relate two related texts to each other.' },
+  { id:'s5', domain:'d3', title:'Set 5: Rhetorical Synthesis', desc:'Use bulleted research notes to accomplish a specific rhetorical goal.' },
+  { id:'s6', domain:'d3', title:'Set 6: Transitions', desc:'Choose the transition word or phrase that best connects two ideas.' },
+  { id:'s7', domain:'d4', title:'Set 7: Boundaries', desc:'Fix sentence boundaries: commas, semicolons, colons, and conjunctions.' },
+  { id:'s8', domain:'d4', title:'Set 8: Form, Structure & Sense', desc:'Subject-verb agreement, verb tense, and dangling/misplaced modifiers.' },
+];
+
+// Each question: { set, passage (string or {a,b} for two-text), stem, choices:[4], correct: idx, explanation }
+const QUESTIONS = [];
+
+/* ===== QUESTION DATA INSERTED BELOW ===== */
+
+// --- Domain 1: Information and Ideas ---
+
+// Set 1: Central Ideas & Details (5)
+QUESTIONS.push(
+{ set:'s1', tag:'Central Ideas & Details',
+  passage:`When Karl von Frisch began studying honeybees in the early twentieth century, he noticed that a forager returning to the hive would sometimes perform a figure-eight movement, waggling its body as it crossed the center line. Von Frisch eventually determined that this "waggle dance" was not a random display but a coded message: the angle of the waggle run relative to vertical indicated the direction of a food source relative to the sun, while the duration of the waggle indicated the distance. Other bees, by following and interpreting the dance, could fly directly to a flower patch they themselves had never visited.`,
+  stem:`Which choice best states the main idea of the text?`,
+  choices:[
+    `Karl von Frisch was the first scientist to study the behavior of honeybees in a laboratory setting.`,
+    `The waggle dance allows bees to communicate the location of food sources to other members of the hive.`,
+    `Bees rely on the position of the sun to navigate long distances when searching for flowers.`,
+    `Von Frisch's research proved that insects are capable of learning complex physical movements.`],
+  correct:1,
+  explanation:`The passage centers on how the waggle dance encodes direction and distance so that other bees can find food they haven't seen themselves. Choice B captures this main idea directly. A and D focus on von Frisch himself rather than the finding, and C mentions only one detail (the sun) rather than the dance's overall function.` },
+
+{ set:'s1', tag:'Central Ideas & Details',
+  passage:`Cities are often several degrees warmer than the surrounding countryside, a phenomenon known as the urban heat island effect. Concrete and asphalt absorb solar radiation during the day and release it slowly at night, while tall buildings can trap warm air at street level and block cooling winds. The effect is intensified by the removal of vegetation, since trees and soil would otherwise provide shade and release moisture through evaporation. Some cities have begun planting rooftop gardens and using lighter-colored pavement in an effort to reduce nighttime temperatures.`,
+  stem:`Which choice best describes the overall focus of the text?`,
+  choices:[
+    `A description of why cities tend to be warmer than nearby rural areas and how some are responding.`,
+    `An argument that rooftop gardens are the most effective solution to rising global temperatures.`,
+    `A comparison of daytime and nighttime temperatures in several major cities around the world.`,
+    `An explanation of how asphalt and concrete are manufactured for use in road construction.`],
+  correct:0,
+  explanation:`The text explains the causes of the urban heat island effect (materials, building shape, lost vegetation) and briefly notes mitigation efforts, matching choice A. B overstates the claim about rooftop gardens being "most effective." C and D focus on details not actually developed in the passage.` },
+
+{ set:'s1', tag:'Central Ideas & Details',
+  passage:`Mara had rehearsed the apology a dozen times on the walk over, each version more polished than the last, but when her sister opened the door, every rehearsed sentence dissolved. She stood there instead with her hands jammed in her pockets, saying only, "I should have called." It wasn't eloquent, and it wasn't what she'd planned, but her sister's shoulders loosened all the same, as though the plainness of it were exactly what had been missing from every text message Mara had sent that week.`,
+  stem:`Which choice best states the main idea of the text?`,
+  choices:[
+    `Mara's sister was initially unwilling to forgive her for missing several phone calls.`,
+    `A simple, unrehearsed admission succeeds where Mara's carefully planned words could not.`,
+    `Mara regrets not writing her apology down before arriving at her sister's house.`,
+    `Text messages are generally a poor substitute for face-to-face conversation between family members.`],
+  correct:1,
+  explanation:`The passage contrasts Mara's polished, rehearsed lines with the plain sentence that actually eased the tension, showing that sincerity mattered more than eloquence. Choice B captures this. A misreads the sister's reaction, C invents a detail not in the text, and D generalizes beyond what the passage states.` },
+
+{ set:'s1', tag:'Central Ideas & Details',
+  passage:`The spread of the printing press across fifteenth-century Europe did more than make books cheaper; it changed how knowledge itself circulated. Before movable type, a single scholar might spend years copying one manuscript by hand, and errors introduced during copying could persist unnoticed for generations. Printed editions, by contrast, could be checked, corrected, and then reproduced identically thousands of times. This meant that scholars in distant cities could work from the same reliable text and debate its content directly, rather than each working from a slightly different, hand-copied version.`,
+  stem:`According to the text, what was one significant effect of the printing press?`,
+  choices:[
+    `It eliminated the need for scholars to travel between European cities to share ideas.`,
+    `It allowed identical, corrected texts to be reproduced so that scholars could work from a shared, reliable source.`,
+    `It made hand-copied manuscripts more valuable to collectors than printed books.`,
+    `It reduced the overall number of books being produced across Europe each year.`],
+  correct:1,
+  explanation:`The passage states that printed editions could be corrected and reproduced identically, letting scholars "work from the same reliable text." Choice B restates this directly. The other choices describe effects not supported by the passage.` },
+
+{ set:'s1', tag:'Central Ideas & Details',
+  passage:`A recent study tracked the sleep patterns of college students during exam periods and found that students who slept fewer than six hours the night before a test scored, on average, ten percent lower than those who slept seven or more hours, even when both groups had studied for a similar number of hours beforehand. The researchers suggested that sleep may help the brain consolidate information learned earlier in the day, meaning that additional study time cannot fully substitute for adequate rest.`,
+  stem:`Which choice best states the central claim of the text?`,
+  choices:[
+    `Students who study longer hours always perform better on exams than those who study less.`,
+    `Sleep duration affects exam performance in a way that extra studying alone cannot fully compensate for.`,
+    `Ten percent of college students report sleeping fewer than six hours during exam periods.`,
+    `Researchers have proven that sleep is more important than studying for academic success.`],
+  correct:1,
+  explanation:`The passage's key finding is that shorter sleep correlated with lower scores regardless of study time, and that sleep may help "consolidate" learning—so more studying doesn't fully make up for lost sleep. Choice B reflects this. D overstates the claim ("more important than studying"), which the text doesn't assert.` }
+);
+
+// Set 2: Command of Evidence (5) & Inferences (5)
+QUESTIONS.push(
+{ set:'s2', tag:'Command of Evidence',
+  passage:`Historians have long debated whether the Roman roads primarily served military or commercial purposes. Some point out that many major roads were built immediately following military campaigns, connecting newly conquered territory back to Rome. Others argue that the roads' lasting economic impact—the growth of trade towns along their routes and the standardization of cart-axle widths to match road grooves—suggests commerce quickly became their dominant use, regardless of their original purpose.`,
+  stem:`Which choice, if true, would provide the most direct support for the claim that Roman roads' economic impact outlasted their military origins?`,
+  choices:[
+    `Records show that Roman legions used the roads to move troops within days of a road's completion.`,
+    `Archaeological surveys find that towns along former Roman roads continued to grow as trade centers for centuries after Rome's military campaigns ended.`,
+    `Some Roman roads were named after the generals who ordered their construction.`,
+    `The width of Roman cart axles varied significantly from region to region.`],
+  correct:1,
+  explanation:`The claim is about long-term economic impact outlasting military origins. Choice B directly shows continued commercial growth "for centuries after" military campaigns ended, which is the strongest support. A supports the military-use side, and C and D don't address long-term economic impact.` },
+
+{ set:'s2', tag:'Command of Evidence',
+  passage:`A city council member argued that a proposed bike-lane expansion would reduce traffic congestion downtown. Critics countered that adding bike lanes would remove a lane of car traffic and worsen congestion instead.`,
+  stem:`Which finding would best support the council member's argument?`,
+  choices:[
+    `A survey found that most downtown residents own at least one car.`,
+    `In a comparable city, a similar bike-lane expansion was followed by a 12 percent drop in average car commute times, as more commuters switched to biking.`,
+    `The cost of installing new bike lanes was higher than city planners initially estimated.`,
+    `Bike lane usage tends to be higher in the spring and summer months than in winter.`],
+  correct:1,
+  explanation:`The council member claims the bike lanes will reduce congestion. Choice B provides a concrete precedent where a similar change led to shorter commute times, directly supporting that claim. The other choices are either irrelevant or support the critics' position.` },
+
+{ set:'s2', tag:'Command of Evidence',
+  passage:`In her memoir, chef Elena Voss writes that professional kitchens are "far more collaborative than the shouting matches shown on television." She describes a typical dinner service as a coordinated effort in which each cook silently anticipates the next person's needs.`,
+  stem:`Which quotation from Voss's memoir would best support the claim that kitchen work is collaborative rather than combative?`,
+  choices:[
+    `"The head chef's title carries more weight in a formal kitchen than in a casual one."`,
+    `"On a good night, I never have to ask for anything—the pan I need is already in my hand before I look up."`,
+    `"Television producers often exaggerate conflict because it makes for better ratings."`,
+    `"I trained in three different countries before opening my own restaurant."`],
+  correct:1,
+  explanation:`Choice B illustrates wordless teamwork—another cook anticipating a need before it's voiced—which is a concrete example of collaboration. The other quotations don't directly depict cooks working together.` },
+
+{ set:'s2', tag:'Command of Evidence',
+  passage:`Marketing researchers claim that consumers are more likely to purchase a product when a price is displayed as $9.99 rather than $10.00, a pattern sometimes called "left-digit bias," in which shoppers focus disproportionately on the leftmost digit of a price.`,
+  stem:`Which of the following, if true, would best support the existence of left-digit bias?`,
+  choices:[
+    `In a controlled experiment, sales of an item rose by 24 percent when its price was changed from $10.00 to $9.99, with no other changes made.`,
+    `Consumers reported in a survey that price was an important factor in their purchasing decisions.`,
+    `A store increased the price of an item from $9.99 to $10.49 and total revenue for the month declined slightly.`,
+    `Shoppers spent more time reading product descriptions than reading prices, according to eye-tracking data.`],
+  correct:0,
+  explanation:`Left-digit bias predicts a disproportionate response to a one-cent price change that shifts the leading digit. Choice A isolates exactly that variable and shows a large sales increase, providing direct experimental support. The other choices don't isolate the leading-digit effect.` },
+
+{ set:'s2', tag:'Command of Evidence',
+  passage:`A public health official claimed that a new handwashing awareness campaign reduced the spread of seasonal colds among elementary school students.`,
+  stem:`Which finding would most directly undermine the official's claim?`,
+  choices:[
+    `Cold and flu rates among students dropped by a similar percentage in nearby districts that ran no such campaign.`,
+    `The campaign included colorful posters placed near school bathroom sinks.`,
+    `Teachers reported that most students seemed to enjoy the campaign's classroom activities.`,
+    `The campaign cost less to run than the district had originally budgeted.`],
+  correct:0,
+  explanation:`If cold rates dropped just as much in districts without the campaign, that suggests some other factor—not the campaign—caused the decline, undermining the causal claim. The other choices describe the campaign but don't address whether it actually caused the drop.` },
+
+{ set:'s2', tag:'Inferences',
+  passage:`Octopuses have no rigid internal skeleton, which allows them to squeeze through any gap larger than their beak, the only hard part of their body. Researchers have filmed octopuses flattening themselves to slip through openings barely wider than a coin, then rapidly reassuming their normal shape once through. Because of this ability, aquariums housing octopuses must seal even the smallest gaps in tank lids, since a determined octopus that finds an opening will almost certainly _______`,
+  stem:`Which choice most logically completes the text?`,
+  choices:[
+    `remain in its tank until a caretaker arrives to feed it.`,
+    `use the opening to escape rather than staying inside the tank.`,
+    `avoid the opening because it prefers familiar surroundings.`,
+    `signal to aquarium staff that repairs are needed.`],
+  correct:1,
+  explanation:`The passage establishes that octopuses can squeeze through tiny gaps and that aquariums must seal every opening—implying that an unsealed gap would be used to escape. Choice B is the only completion consistent with this logic.` },
+
+{ set:'s2', tag:'Inferences',
+  passage:`Archaeologists excavating a Bronze Age settlement found cooking hearths inside nearly every dwelling, but only a handful of large communal ovens at the settlement's center, each one blackened from heavy, repeated use and surrounded by broken pottery from many different households' styles.`,
+  stem:`Which choice best states what can reasonably be inferred from the passage?`,
+  choices:[
+    `Most families in the settlement cooked all of their meals exclusively in the communal ovens.`,
+    `While households handled everyday cooking themselves, the communal ovens were likely used by multiple families for shared or specialized baking.`,
+    `The communal ovens were built after the settlement had already been abandoned by most residents.`,
+    `Pottery styles were identical across all households in the settlement.`],
+  correct:1,
+  explanation:`Individual hearths suggest everyday cooking happened at home, while heavily used communal ovens surrounded by pottery from many households suggest shared, perhaps occasional or specialized, use. Choice B fits both pieces of evidence; the others contradict details in the passage.` },
+
+{ set:'s2', tag:'Inferences',
+  passage:`A librarian noticed that requests for large-print books rose sharply every year in October and November, then fell back to typical levels by January, a pattern that did not match seasonal borrowing trends for any other section of the library.`,
+  stem:`Which choice most logically completes the text?`,
+  choices:[
+    `the library likely ordered too many large-print books at the start of each year.`,
+    `something specific to those two months, rather than a general seasonal pattern, was probably driving the increase.`,
+    `readers of large-print books preferred to borrow fiction rather than nonfiction.`,
+    `the library's large-print collection was smaller than its standard-print collection.`],
+  correct:1,
+  explanation:`Because the spike doesn't match seasonal trends elsewhere in the library, something particular to October–November is implicated, not a general seasonal effect. Choice B is the logical conclusion; the other choices aren't supported by the described pattern.` },
+
+{ set:'s2', tag:'Inferences',
+  passage:`In a taste test, participants rated an identical wine as significantly better when told it cost $45 a bottle than when told the same wine cost $8 a bottle. Brain imaging during the test showed increased activity in regions associated with pleasure when participants believed they were drinking the pricier wine.`,
+  stem:`Which choice best states what the study's results most strongly suggest?`,
+  choices:[
+    `Expensive wines are objectively more pleasurable to drink than cheaper wines.`,
+    `Price information can influence a person's actual subjective experience of a product, not just their reported opinion of it.`,
+    `Participants in the study were unable to taste any difference between wines of different quality.`,
+    `Brain imaging technology is not reliable for studying taste perception.`],
+  correct:1,
+  explanation:`Because brain activity linked to pleasure changed along with the stated price—even though the wine was identical—the results suggest price shapes actual experience, not merely stated opinion. Choice B captures this; A wrongly assumes the wines actually differed in quality.` },
+
+{ set:'s2', tag:'Inferences',
+  passage:`A software company found that users who completed its onboarding tutorial within their first day were far more likely to still be using the app six months later than users who skipped or delayed the tutorial. The company could not determine, however, whether the tutorial itself caused users to stick with the app or whether _______`,
+  stem:`Which choice most logically completes the text?`,
+  choices:[
+    `the tutorial was too long for most new users to complete.`,
+    `users who were already more motivated to learn the app were simply more likely to both finish the tutorial and keep using the app.`,
+    `the app's features changed significantly after the tutorial was introduced.`,
+    `most users preferred video tutorials over written instructions.`],
+  correct:1,
+  explanation:`The passage sets up a classic correlation-versus-causation problem: an underlying trait (motivation) could explain both behaviors. Choice B names that alternative explanation, completing the logical contrast introduced by "or whether."` }
+);
+
+// --- Domain 2: Craft and Structure ---
+
+// Set 3: Words in Context (5)
+QUESTIONS.push(
+{ set:'s3', tag:'Words in Context',
+  passage:`The senator's speech was praised by allies as candid but criticized by opponents as needlessly blunt; either way, no one accused her of being _______ about her plans to cut the department's budget.`,
+  stem:`Which choice completes the text with the most logical and precise word or phrase?`,
+  choices:[`evasive`,`enthusiastic`,`meticulous`,`inexperienced`],
+  correct:0,
+  explanation:`"Candid" and "bluntly" both suggest directness, and the sentence sets up a contrast ("either way, no one accused her of being..."). The opposite of directness is evasiveness, making "evasive" the most logical choice.` },
+
+{ set:'s3', tag:'Words in Context',
+  passage:`Despite the committee's initial excitement, the plan to renovate the old theater proved financially _______: every contractor's estimate came back far higher than the budget could support.`,
+  stem:`Which choice completes the text with the most logical and precise word or phrase?`,
+  choices:[`untenable`,`predictable`,`popular`,`straightforward`],
+  correct:0,
+  explanation:`The sentence explains that every estimate exceeded the budget, meaning the plan couldn't be sustained financially. "Untenable" (not able to be maintained or defended) precisely fits; the other choices don't capture the idea of financial infeasibility.` },
+
+{ set:'s3', tag:'Words in Context',
+  passage:`In her review, the critic praised the novel's _______ prose, noting that the author managed to convey an entire childhood in a single, economical paragraph rather than the sprawling chapters typical of the genre.`,
+  stem:`As used in the text, which choice most nearly captures the meaning intended?`,
+  choices:[`spare`,`ornate`,`confusing`,`repetitive`],
+  correct:0,
+  explanation:`The passage contrasts "economical" writing with "sprawling chapters," praising brevity and efficiency. "Spare," meaning minimal or unembellished, matches this idea; "ornate" would suggest the opposite.` },
+
+{ set:'s3', tag:'Words in Context',
+  passage:`The old bridge had been closed for months, and engineers debated whether it should be renovated or demolished; local residents, meanwhile, argued that the bridge's history made it worth _______, whatever the cost.`,
+  stem:`Which choice completes the text with the most logical and precise word or phrase?`,
+  choices:[`preserving`,`ignoring`,`forgetting`,`relocating`],
+  correct:0,
+  explanation:`Residents value the bridge's history and want it kept "whatever the cost," which aligns with wanting to preserve it. The other options contradict the residents' evident attachment to the bridge.` },
+
+{ set:'s3', tag:'Words in Context',
+  passage:`Although the professor's lectures covered highly technical material, students found her explanations remarkably _______, often saying that a concept made perfect sense only after she rephrased it in plain, everyday terms.`,
+  stem:`As used in the text, which choice most nearly captures the meaning intended?`,
+  choices:[`accessible`,`abstract`,`lengthy`,`monotonous`],
+  correct:0,
+  explanation:`Students understood the material better after her plain-language rephrasing, indicating her explanations were easy to grasp, or "accessible." "Abstract" would work against students understanding the concept, contradicting the passage.` }
+);
+
+// Set 4: Text Structure & Purpose (5) and Cross-Text Connections (5)
+QUESTIONS.push(
+{ set:'s4', tag:'Text Structure & Purpose',
+  passage:`A popular explanation for why cats purr holds that purring simply signals contentment. But purring also occurs when cats are injured, giving birth, or even dying—hardly contented states. Some researchers now propose instead that the low-frequency vibrations of a purr may promote bone healing and tissue repair, which would explain why cats purr across such a wide range of physical conditions, not just pleasant ones.`,
+  stem:`Which choice best describes the function of the second sentence in the text ("But purring...contented states")?`,
+  choices:[
+    `It introduces a widely accepted explanation that the rest of the passage will go on to support.`,
+    `It presents evidence that complicates the popular explanation given in the first sentence.`,
+    `It summarizes the main finding of a scientific study described later in the text.`,
+    `It restates the claim made in the first sentence using different wording.`],
+  correct:1,
+  explanation:`The second sentence points out cases (injury, dying) where the "contentment" explanation doesn't fit, complicating it and setting up the alternative theory that follows. Choice B captures this function.` },
+
+{ set:'s4', tag:'Text Structure & Purpose',
+  passage:`The essay opens by describing a single abandoned factory in vivid, specific detail—the rust patterns, the broken windows, a child's shoe left on the floor. Only in the final paragraph does the writer reveal that this factory is one of thousands closed across the region in a single decade, using the specific image to make an otherwise abstract economic statistic feel immediate and human.`,
+  stem:`Which choice best describes the overall structure of the essay described in the text?`,
+  choices:[
+    `It presents two competing arguments and then evaluates which is more persuasive.`,
+    `It moves from a specific, concrete image to a broader, more abstract point.`,
+    `It lists several statistics before concluding with a personal anecdote.`,
+    `It compares two different factories in order to highlight their similarities.`],
+  correct:1,
+  explanation:`The passage explicitly describes movement from one vivid, specific factory to the broader statistic about "thousands closed across the region," matching choice B exactly.` },
+
+{ set:'s4', tag:'Text Structure & Purpose',
+  passage:`In the article, the author first explains how coral reefs form over centuries, then describes the specific temperature threshold that triggers coral bleaching, and finally discusses two proposed strategies—selective breeding of heat-resistant coral and offshore nurseries—for helping reefs survive rising ocean temperatures.`,
+  stem:`Which choice best describes the function of the article's final section, on breeding and nurseries?`,
+  choices:[
+    `It undermines the claims made earlier in the article about coral bleaching.`,
+    `It offers possible responses to the problem described earlier in the article.`,
+    `It provides historical background on how coral reefs were first discovered.`,
+    `It argues that coral bleaching is not actually caused by rising temperatures.`],
+  correct:1,
+  explanation:`After explaining the problem (bleaching from rising temperatures), the article turns to strategies meant to address that problem, which is a response/solution function, matching choice B.` },
+
+{ set:'s4', tag:'Text Structure & Purpose',
+  passage:`Rather than beginning with her own argument, the columnist opens by summarizing, in careful and even generous detail, the position she ultimately intends to challenge. Only after laying out that opposing view fully does she introduce the data that, in her view, undercuts it.`,
+  stem:`Which choice best states the main purpose of the columnist's approach, as described in the text?`,
+  choices:[
+    `To avoid taking a clear position on the issue being discussed.`,
+    `To present the opposing view fairly before offering evidence against it.`,
+    `To persuade readers that the opposing view is not worth considering.`,
+    `To confuse readers about which position the columnist actually holds.`],
+  correct:1,
+  explanation:`The passage describes a deliberate structure: represent the opposing view fully and fairly, then counter it with data. Choice B matches this described purpose.` },
+
+{ set:'s4', tag:'Text Structure & Purpose',
+  passage:`The report begins with a broad claim: that remote work has permanently changed downtown commercial real estate. It then narrows to a single city, and within that city, to a single office tower, tracking its occupancy rate month by month over three years to illustrate the broader trend with one detailed case.`,
+  stem:`Which choice best describes the structure of the report?`,
+  choices:[
+    `It moves from a general claim to an increasingly specific example that illustrates it.`,
+    `It presents several unrelated case studies without connecting them to a larger claim.`,
+    `It opens with a specific example and ends with an unrelated general claim.`,
+    `It repeats the same broad claim several times without providing supporting detail.`],
+  correct:0,
+  explanation:`The report explicitly narrows from a broad claim, to one city, to one building—a general-to-specific structure, matching choice A.` },
+
+{ set:'s4', tag:'Cross-Text Connections',
+  passage:{
+    a:`Text 1: Some economists argue that raising the minimum wage reduces employment, since businesses facing higher labor costs will hire fewer workers or automate tasks previously done by entry-level employees.`,
+    b:`Text 2: A study of several cities that raised their minimum wage found no significant change in overall employment levels, suggesting that businesses adjusted through modest price increases rather than through layoffs.`},
+  stem:`Based on the texts, how would the author of Text 2 most likely respond to the claim in Text 1?`,
+  choices:[
+    `By agreeing completely, since both texts predict that employment will fall after a minimum wage increase.`,
+    `By pointing to empirical findings that complicate the prediction made in Text 1.`,
+    `By arguing that businesses are incapable of adjusting prices in response to cost changes.`,
+    `By claiming that minimum wage laws have no effect on business behavior of any kind.`],
+  correct:1,
+  explanation:`Text 2's findings (no significant employment change) directly complicate the prediction in Text 1 (employment would fall). Choice B accurately describes this relationship; A misstates Text 2's finding.` },
+
+{ set:'s4', tag:'Cross-Text Connections',
+  passage:{
+    a:`Text 1: Botanist Ruth Okafor contends that the newly discovered orchid species relies entirely on a single moth species for pollination, having observed the moth visiting the flower on dozens of occasions with no other insects present.`,
+    b:`Text 2: A separate field team observed the same orchid species being visited and successfully pollinated by two species of beetle in a different region, with the moth Okafor described entirely absent from their study site.`},
+  stem:`Which choice best describes how the information in Text 2 relates to the claim in Text 1?`,
+  choices:[
+    `It confirms Okafor's claim by describing the same moth pollinating the orchid in a new location.`,
+    `It complicates Okafor's claim by showing the orchid can be pollinated by insects other than the moth she observed.`,
+    `It is unrelated to Okafor's claim, since it discusses a completely different plant species.`,
+    `It proves that the moth described by Okafor does not exist in that region of the world.`],
+  correct:1,
+  explanation:`Okafor claims the orchid relies "entirely" on one moth species; Text 2 shows the same orchid pollinated by beetles with no moth present, complicating the claim of exclusive reliance. Choice B is accurate.` },
+
+{ set:'s4', tag:'Cross-Text Connections',
+  passage:{
+    a:`Text 1: Nutrition researcher Daniel Reyes argues that food diaries are an unreliable research tool because participants tend to underreport how much they actually eat, skewing study results.`,
+    b:`Text 2: A recent study using discreet wearable cameras to record participants' actual food intake found that self-reported food diaries from the same participants matched camera data closely, with less than a five percent discrepancy on average.`},
+  stem:`Based on the texts, how would Daniel Reyes most likely respond to the study described in Text 2?`,
+  choices:[
+    `He would likely cite it as further evidence that food diaries are unreliable.`,
+    `He would likely view it as evidence that challenges his claim about food diaries.`,
+    `He would likely argue that wearable cameras are more expensive than food diaries.`,
+    `He would likely agree that camera-based studies are impossible to conduct ethically.`],
+  correct:1,
+  explanation:`Text 2's close match between diaries and camera data challenges Reyes's claim that diaries are unreliable due to underreporting. Choice B correctly identifies this as a challenge to his position.` },
+
+{ set:'s4', tag:'Cross-Text Connections',
+  passage:{
+    a:`Text 1: Urban planner Wei Chen claims that adding more highway lanes rarely reduces traffic congestion in the long run, since new lanes tend to attract more drivers until the road is just as congested as before, a phenomenon known as induced demand.`,
+    b:`Text 2: After a major highway expansion, one metropolitan area recorded a temporary 15 percent drop in average commute times, though transportation officials cautioned that traffic volume was still rising each month and had nearly returned to pre-expansion levels within three years.`},
+  stem:`Which choice best describes the relationship between Text 1 and Text 2?`,
+  choices:[
+    `Text 2 provides a real-world example that is broadly consistent with the pattern Chen describes in Text 1.`,
+    `Text 2 completely disproves the claim Chen makes in Text 1.`,
+    `Text 2 discusses a topic entirely unrelated to the claim made in Text 1.`,
+    `Text 2 shows that highway expansions always immediately worsen traffic congestion.`],
+  correct:0,
+  explanation:`Text 2 describes a temporary improvement followed by traffic returning to near pre-expansion levels within three years—consistent with Chen's "induced demand" pattern. Choice A best captures this relationship.` },
+
+{ set:'s4', tag:'Cross-Text Connections',
+  passage:{
+    a:`Text 1: Sleep scientist Priya Nair argues that blue light from screens before bedtime suppresses melatonin production, making it harder for people to fall asleep, and recommends avoiding screens for at least an hour before bed.`,
+    b:`Text 2: A study that had one group of participants read on a tablet and another group read a printed book before bed found no significant difference in how quickly either group fell asleep, though both groups took slightly longer to fall asleep than a control group that read nothing at all.`},
+  stem:`Based on the texts, how does the study in Text 2 complicate Nair's recommendation in Text 1?`,
+  choices:[
+    `It suggests that the type of light source, rather than screen use specifically, may not be the main factor affecting sleep onset in this study.`,
+    `It confirms that avoiding screens for an hour before bed is the only effective way to fall asleep quickly.`,
+    `It shows that reading of any kind has no effect whatsoever on how quickly people fall asleep.`,
+    `It demonstrates that printed books cause people to fall asleep faster than tablets do.`],
+  correct:0,
+  explanation:`Because tablet and print readers fell asleep at similar rates (both slightly slower than the no-reading group), the study suggests screen light specifically may not be the key factor, complicating Nair's screen-focused recommendation. Choice A captures this nuance.` }
+);
+
+// --- Domain 3: Expression of Ideas ---
+
+// Set 5: Rhetorical Synthesis (8)
+QUESTIONS.push(
+{ set:'s5', tag:'Rhetorical Synthesis',
+  passage:`While researching a report, a student has taken the following notes:
+  <ul>
+    <li>Marie Tharp was a geologist and cartographer working in the 1950s.</li>
+    <li>She mapped the ocean floor using sonar data collected by her research partner, Bruce Heezen.</li>
+    <li>Her maps revealed a long rift valley running down the center of the Mid-Atlantic Ridge.</li>
+    <li>This rift valley became key evidence supporting the then-controversial theory of continental drift.</li>
+  </ul>`,
+  stem:`The student wants to explain why Marie Tharp's work was scientifically significant. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+  choices:[
+    `Marie Tharp was a geologist and cartographer who worked with a research partner named Bruce Heezen.`,
+    `Marie Tharp's maps of the ocean floor identified a rift valley that provided key evidence for the theory of continental drift.`,
+    `Marie Tharp used sonar data in the 1950s to complete her work as a cartographer.`,
+    `Bruce Heezen collected sonar data that Marie Tharp later used in her research.`],
+  correct:1,
+  explanation:`The goal is to explain scientific significance. Choice B links her mapping directly to a major scientific outcome (evidence for continental drift), which is the significance. The other choices state facts but don't address why the work mattered scientifically.` },
+
+{ set:'s5', tag:'Rhetorical Synthesis',
+  passage:`A student has taken the following notes:
+  <ul>
+    <li>The Icelandic city of Reykjavik heats nearly all of its buildings using geothermal energy.</li>
+    <li>Geothermal energy comes from heat stored underground, often near volcanic activity.</li>
+    <li>Iceland sits on the Mid-Atlantic Ridge, an area of significant volcanic and geologic activity.</li>
+    <li>Geothermal heating produces far fewer greenhouse gas emissions than burning oil or coal.</li>
+  </ul>`,
+  stem:`The student wants to explain why Reykjavik is particularly well-suited to geothermal heating. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+  choices:[
+    `Geothermal heating produces fewer greenhouse gas emissions than burning oil or coal.`,
+    `Reykjavik heats nearly all of its buildings using geothermal energy instead of fossil fuels.`,
+    `Because Iceland sits on the geologically active Mid-Atlantic Ridge, it has ready access to the underground heat that geothermal energy relies on.`,
+    `Geothermal energy comes from heat that is stored underground near volcanic activity.`],
+  correct:2,
+  explanation:`The goal is to explain why Reykjavik specifically is well-suited to geothermal heating. Choice C connects Iceland's location on the Mid-Atlantic Ridge (geologic activity) to the availability of underground heat, which is the reason for suitability. The others state facts without making that connection.` },
+
+{ set:'s5', tag:'Rhetorical Synthesis',
+  passage:`A student has taken the following notes:
+  <ul>
+    <li>Octopuses have three hearts: two pump blood to the gills, one pumps it to the rest of the body.</li>
+    <li>The heart that serves the body actually stops beating when the octopus swims.</li>
+    <li>Because of this, octopuses tire quickly when swimming and prefer to crawl along the seafloor instead.</li>
+  </ul>`,
+  stem:`The student wants to explain why octopuses often crawl rather than swim. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+  choices:[
+    `Octopuses have three hearts, two of which pump blood to the gills.`,
+    `Because swimming stops one of an octopus's three hearts from beating, octopuses tire quickly and often prefer to crawl instead.`,
+    `Octopuses are marine animals that live on the seafloor in many parts of the world.`,
+    `One of an octopus's three hearts pumps blood to the rest of its body.`],
+  correct:1,
+  explanation:`The goal is to explain the crawling preference. Choice B gives the causal chain from the notes: swimming stops a heart, causing quick fatigue, causing a preference to crawl. The other choices are true but don't explain the behavior.` },
+
+{ set:'s5', tag:'Rhetorical Synthesis',
+  passage:`A student has taken the following notes:
+  <ul>
+    <li>The Roman aqueducts used gravity, not pumps, to move water across long distances.</li>
+    <li>Engineers built the channels with a very slight, carefully calculated downward slope.</li>
+    <li>Some aqueducts stretched over 50 miles yet dropped only a few hundred feet in total elevation.</li>
+    <li>This level of precision was achieved without any modern surveying instruments.</li>
+  </ul>`,
+  stem:`The student wants to emphasize the engineering skill required to build the aqueducts. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+  choices:[
+    `The Roman aqueducts moved water using gravity rather than mechanical pumps.`,
+    `Some Roman aqueducts stretched for more than 50 miles across the countryside.`,
+    `Roman engineers achieved a precise, gradual slope over tens of miles without modern surveying instruments, allowing gravity alone to move the water.`,
+    `Roman aqueducts are still studied today by historians interested in ancient infrastructure.`],
+  correct:2,
+  explanation:`The goal is to emphasize engineering skill. Choice C combines the precision of the slope, the long distance, and the lack of modern tools—directly highlighting the skill involved. The other choices mention isolated facts without emphasizing the difficulty or precision.` },
+
+{ set:'s5', tag:'Rhetorical Synthesis',
+  passage:`A student has taken the following notes:
+  <ul>
+    <li>Venus rotates so slowly that one day on Venus is longer than one year on Venus.</li>
+    <li>A Venusian day (one full rotation) takes about 243 Earth days.</li>
+    <li>A Venusian year (one orbit around the sun) takes about 225 Earth days.</li>
+  </ul>`,
+  stem:`The student wants to illustrate how unusual Venus's rotation is compared to its orbit. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+  choices:[
+    `Venus is a planet that orbits the sun and also rotates on its own axis.`,
+    `A single day on Venus, at about 243 Earth days, actually lasts longer than a full Venusian year, which takes about 225 Earth days.`,
+    `Venus takes about 225 Earth days to complete one orbit around the sun.`,
+    `Scientists study the rotation of planets such as Venus to learn about their atmospheres.`],
+  correct:1,
+  explanation:`The goal is to illustrate the unusual relationship between Venus's day and year. Choice B directly compares the two figures (243 vs. 225 days) to show the day is longer than the year, which is exactly the surprising fact to highlight.` },
+
+{ set:'s5', tag:'Rhetorical Synthesis',
+  passage:`A student has taken the following notes:
+  <ul>
+    <li>Composer Florence Price completed her Symphony in E minor in 1932.</li>
+    <li>In 1933, it became the first symphony by a Black woman to be performed by a major American orchestra.</li>
+    <li>The Chicago Symphony Orchestra premiered the piece at the Century of Progress exhibition.</li>
+    <li>Many of Price's manuscripts were thought lost until a collection was discovered in an abandoned house in 2009.</li>
+  </ul>`,
+  stem:`The student wants to highlight a historic milestone in Florence Price's career. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+  choices:[
+    `Florence Price's manuscripts were discovered in an abandoned house nearly eight decades after she wrote them.`,
+    `In 1933, Florence Price's Symphony in E minor became the first symphony by a Black woman performed by a major American orchestra.`,
+    `The Chicago Symphony Orchestra performed at the Century of Progress exhibition in 1933.`,
+    `Florence Price completed her Symphony in E minor in 1932, one year before its premiere.`],
+  correct:1,
+  explanation:`The goal is to highlight a historic milestone. Choice B states the milestone explicitly: the first such symphony performed by a major orchestra. The other choices are supporting details but don't name the milestone itself.` },
+
+{ set:'s5', tag:'Rhetorical Synthesis',
+  passage:`A student has taken the following notes:
+  <ul>
+    <li>Tardigrades, also called "water bears," are microscopic animals found in nearly every environment on Earth.</li>
+    <li>They can survive being frozen to nearly absolute zero and heated past the boiling point of water.</li>
+    <li>They can also survive direct exposure to the vacuum of outer space, as shown in a 2007 experiment.</li>
+    <li>They survive extreme conditions by entering a dried-out, dormant state called cryptobiosis.</li>
+  </ul>`,
+  stem:`The student wants to explain how tardigrades are able to survive such extreme conditions. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+  choices:[
+    `Tardigrades are microscopic animals that can be found in nearly every environment on Earth.`,
+    `In a 2007 experiment, tardigrades were shown to survive direct exposure to outer space.`,
+    `Tardigrades survive extreme heat, cold, and even the vacuum of space by entering a dried-out, dormant state known as cryptobiosis.`,
+    `Tardigrades are commonly nicknamed "water bears" because of their appearance under a microscope.`],
+  correct:2,
+  explanation:`The goal is to explain the mechanism behind their survival. Choice C names that mechanism—cryptobiosis—and ties it to the extreme conditions mentioned in the notes. The other choices describe tardigrades without explaining how they survive.` },
+
+{ set:'s5', tag:'Rhetorical Synthesis',
+  passage:`A student has taken the following notes:
+  <ul>
+    <li>Before refrigeration, some coastal towns preserved fish by packing it in salt.</li>
+    <li>Salt draws moisture out of fish tissue, and bacteria that cause spoilage need moisture to grow.</li>
+    <li>Salted fish could be stored for months and transported long distances inland.</li>
+    <li>This allowed inland communities, far from the coast, to eat seafood as part of their diet.</li>
+  </ul>`,
+  stem:`The student wants to explain how salting fish changed what inland communities were able to eat. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+  choices:[
+    `Salt draws moisture out of fish tissue, which prevents spoilage-causing bacteria from growing.`,
+    `Because salted fish could be stored for months and carried long distances, communities far from the coast were able to include seafood in their diets.`,
+    `Coastal towns preserved fish using salt before refrigeration was available.`,
+    `Bacteria that cause food to spoil generally require moisture in order to grow.`],
+  correct:1,
+  explanation:`The goal is specifically about inland communities' diets. Choice B connects the storage/transport benefit of salting directly to inland communities gaining access to seafood. The other choices explain the salting process but don't address the effect on inland diets.` }
+);
+
+// Set 6: Transitions (7)
+QUESTIONS.push(
+{ set:'s6', tag:'Transitions',
+  passage:`The museum's new wing was designed to be nearly invisible from the street, tucked below ground level and topped with a grass roof. _______, visitors approaching from the north see only a gentle hill where a three-story building actually stands.`,
+  stem:`Which choice completes the text with the most logical transition?`,
+  choices:[`As a result`,`For example`,`In contrast`,`Similarly`],
+  correct:0,
+  explanation:`The second sentence describes the consequence of the design choice described in the first sentence (an invisible building means visitors see only a hill). "As a result" correctly signals this cause-and-effect relationship.` },
+
+{ set:'s6', tag:'Transitions',
+  passage:`Many assume that the fastest runner in a relay race should run the final leg, since that runner crosses the finish line. _______, coaches often place their fastest runner second, reasoning that early positioning does more to build an insurmountable lead.`,
+  stem:`Which choice completes the text with the most logical transition?`,
+  choices:[`Consequently`,`However`,`In addition`,`For instance`],
+  correct:1,
+  explanation:`The second sentence contradicts the common assumption stated in the first sentence. "However" correctly signals this contrast.` },
+
+{ set:'s6', tag:'Transitions',
+  passage:`The committee reviewed dozens of proposals for the new park, most of which included a playground and walking paths. _______, one proposal stood out for including a small outdoor amphitheater, a feature no other submission had considered.`,
+  stem:`Which choice completes the text with the most logical transition?`,
+  choices:[`Nevertheless`,`Therefore`,`Notably`,`Likewise`],
+  correct:2,
+  explanation:`The second sentence draws attention to a proposal that stood out from the rest. "Notably" correctly signals that this detail is being highlighted as noteworthy or exceptional.` },
+
+{ set:'s6', tag:'Transitions',
+  passage:`Deep-sea anglerfish live in near-total darkness thousands of feet below the surface. _______, they have evolved a bioluminescent lure that dangles in front of their mouths to attract prey in the dark.`,
+  stem:`Which choice completes the text with the most logical transition?`,
+  choices:[`On the other hand`,`Accordingly`,`Meanwhile`,`Regardless`],
+  correct:1,
+  explanation:`The lure is an adaptation that follows logically from living in darkness—it's a response to that condition. "Accordingly" signals this logical consequence.` },
+
+{ set:'s6', tag:'Transitions',
+  passage:`Early critics dismissed the novel as overly experimental, arguing that its fragmented structure would alienate readers. _______, the novel became a bestseller, and many later scholars credited its unconventional structure as central to its success.`,
+  stem:`Which choice completes the text with the most logical transition?`,
+  choices:[`In fact`,`Similarly`,`For example`,`As a result`],
+  correct:0,
+  explanation:`The novel's actual success directly contradicts the critics' prediction that it would "alienate readers." "In fact" signals that the following statement reveals the true outcome, which runs counter to the expectation just described.` },
+
+{ set:'s6', tag:'Transitions',
+  passage:`The new irrigation system reduced water usage on the farm by nearly a third in its first year. _______, the farm's overall crop yield remained roughly the same, suggesting the plants had been receiving more water than they actually needed.`,
+  stem:`Which choice completes the text with the most logical transition?`,
+  choices:[`Furthermore`,`Meanwhile`,`For instance`,`In other words`],
+  correct:1,
+  explanation:`The second sentence introduces a separate, simultaneous observation (about crop yield) alongside the water-usage finding, rather than an example or restatement of it. "Meanwhile" correctly signals this second, related point.` },
+
+{ set:'s6', tag:'Transitions',
+  passage:`Some historians credit the invention of the horse collar with transforming medieval agriculture, since it allowed horses to pull plows without choking, unlike earlier harness designs. _______, this claim is disputed by scholars who argue that oxen remained the dominant plow animal in most regions well into the horse collar era.`,
+  stem:`Which choice completes the text with the most logical transition?`,
+  choices:[`Similarly`,`Yet`,`Specifically`,`Thus`],
+  correct:1,
+  explanation:`The second sentence presents a scholarly dispute that pushes back against the claim in the first sentence. "Yet" correctly signals this contrast/pushback.` }
+);
+
+// --- Domain 4: Standard English Conventions ---
+
+// Set 7: Boundaries (7)
+QUESTIONS.push(
+{ set:'s7', tag:'Boundaries',
+  passage:`The festival began at noon _______ it did not reach its peak attendance until early evening.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`, but`,`, and`,`; but,`,`but`],
+  correct:0,
+  explanation:`Two independent clauses joined by a coordinating conjunction ("but") require a comma before the conjunction. Choice A correctly punctuates this. B uses the wrong conjunction for a contrast, C incorrectly adds an extra comma after "but," and D creates a run-on sentence by omitting the comma.` },
+
+{ set:'s7', tag:'Boundaries',
+  passage:`Marcus spent the summer restoring an old motorcycle _______ a project that taught him more about patience than any of his classes had.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`,`,`;`,`and`,`,and`],
+  correct:0,
+  explanation:`"A project that taught him..." is a noun phrase renaming "restoring an old motorcycle," so it should be set off with a comma, not joined as if it were an independent clause. A semicolon (choice B) is incorrect because what follows is not an independent clause.` },
+
+{ set:'s7', tag:'Boundaries',
+  passage:`The committee reviewed three finalists for the scholarship _______ each candidate had submitted an essay, two letters of recommendation, and a portfolio of work.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`, since`,`; since`,`. Since`,`since`],
+  correct:0,
+  explanation:`"Since each candidate had submitted..." is a dependent clause providing a reason, correctly attached to the independent clause with a comma. A semicolon (B) requires an independent clause on both sides, and a period (C) would create a sentence fragment.` },
+
+{ set:'s7', tag:'Boundaries',
+  passage:`Only one instrument survived the shipwreck intact _______ a small brass compass that a diver recovered nearly two centuries later.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`:`,`,`,`; which was`,`and was`],
+  correct:0,
+  explanation:`A colon can introduce an explanation or elaboration of what precedes it—here, identifying the one surviving instrument. Choice A is correct; the other options either create a run-on or a grammatically awkward construction.` },
+
+{ set:'s7', tag:'Boundaries',
+  passage:`Researchers had expected the glacier to retreat gradually over decades _______ instead, satellite images showed it losing nearly a quarter of its mass within a single year.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`;`,`,`,`and`,`, and`],
+  correct:0,
+  explanation:`Both parts of the sentence are independent clauses expressing a contrast, so they can be joined with a semicolon. Choice A is correct; a comma alone (B) would create a comma splice.` },
+
+{ set:'s7', tag:'Boundaries',
+  passage:`The novel's ending, _______ many readers found abrupt, was actually planned by the author from the very first draft.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`which`,`, which,`,`that`,`it`],
+  correct:0,
+  explanation:`The nonessential clause "which many readers found abrupt" needs to be set off by commas on both sides. Since the sentence already provides a comma after "ending," the clause should begin with "which" (no extra comma before it) and end with a comma before "was." Choice A fits this pattern correctly within the given structure.` },
+
+{ set:'s7', tag:'Boundaries',
+  passage:`Few visitors realize that the botanical garden's oldest tree predates the city itself _______ having been planted nearly a century before the first streets were paved.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`,`,`;`,`.`,`and`],
+  correct:0,
+  explanation:`"Having been planted nearly a century before..." is a participial phrase modifying the tree, not an independent clause, so it should be attached with a comma. A semicolon or period (B, C) would incorrectly treat it as a complete sentence.` }
+);
+
+// Set 8: Form, Structure & Sense (8)
+QUESTIONS.push(
+{ set:'s8', tag:'Form / Structure / Sense',
+  passage:`The collection of essays, which spans nearly forty years of the author's career, _______ widely regarded as her most personal work.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`is`,`are`,`were`,`have been`],
+  correct:0,
+  explanation:`The subject of the sentence is "the collection" (singular), not "essays" or "years," which are objects of prepositional phrases. A singular verb, "is," is required to agree with "the collection."` },
+
+{ set:'s8', tag:'Form / Structure / Sense',
+  passage:`By the time the search party reached the summit, the storm _______ for nearly three hours, forcing the climbers to shelter behind a ridge of rock.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`had been raging`,`rages`,`will rage`,`is raging`],
+  correct:0,
+  explanation:`The storm's raging began and continued before the search party's arrival, a past action completed relative to another past action—requiring the past perfect progressive, "had been raging."` },
+
+{ set:'s8', tag:'Form / Structure / Sense',
+  passage:`Neither the coach nor the players _______ satisfied with the referee's final call.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`were`,`was`,`is`,`has been`],
+  correct:0,
+  explanation:`With "neither...nor" constructions, the verb agrees with the noun closest to it—here, "players" (plural)—so the plural verb "were" is correct.` },
+
+{ set:'s8', tag:'Form / Structure / Sense',
+  passage:`Walking through the abandoned house at dusk, _______`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[
+    `the creak of every floorboard seemed far louder to Priya than it would have in daylight.`,
+    `Priya noticed that the creak of every floorboard seemed far louder than it would have in daylight.`,
+    `every floorboard creaked, seeming far louder to Priya than it would have in daylight.`,
+    `it seemed to Priya that every floorboard's creak was far louder than in daylight.`],
+  correct:1,
+  explanation:`The introductory phrase "Walking through the abandoned house at dusk" must be immediately followed by the person doing the walking. Only choice B places "Priya" right after the modifier. In the other choices, "the creak," "every floorboard," and "it" are left to illogically do the walking.` },
+
+{ set:'s8', tag:'Form / Structure / Sense',
+  passage:`Each of the museum's rotating exhibits _______ curated by a different visiting artist, giving the space a constantly changing character.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`is`,`are`,`were`,`have been`],
+  correct:0,
+  explanation:`"Each" is singular, regardless of the plural noun ("exhibits") that follows it in the prepositional phrase. The singular verb "is" is required to agree with "each."` },
+
+{ set:'s8', tag:'Form / Structure / Sense',
+  passage:`After years of restoration work, the mural finally _______ its original vibrant colors, which had faded almost completely under decades of grime.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`regained`,`regains`,`will regain`,`is regaining`],
+  correct:0,
+  explanation:`The sentence describes a completed action following "years of restoration work," consistent with the simple past tense "regained," matching the past-tense context established by "had faded."` },
+
+{ set:'s8', tag:'Form / Structure / Sense',
+  passage:`Hoping to save enough money for college, _______`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[
+    `Elena's part-time job at the bakery eventually became a source of real pride, not just income.`,
+    `Elena eventually found that her part-time job at the bakery became a source of real pride, not just income.`,
+    `a source of real pride, not just income, was what Elena's part-time job at the bakery eventually became.`,
+    `it eventually became clear that Elena's part-time job at the bakery was a source of real pride.`],
+  correct:1,
+  explanation:`"Hoping to save enough money for college" must modify a person capable of hoping, but only choice B places "Elena" immediately after the modifier. In the other choices, "Elena's part-time job," "a source of real pride," and "it" are illogically left to have been hoping.` },
+
+{ set:'s8', tag:'Form / Structure / Sense',
+  passage:`The data from the three field seasons _______ consistent, showing the same seasonal migration pattern each year researchers collected samples.`,
+  stem:`Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  choices:[`were`,`was`,`is`,`has been`],
+  correct:0,
+  explanation:`"Data" is treated as a plural noun in formal Standard English (the singular is "datum"), so it requires the plural verb "were" rather than "was."` }
+);
+
+/* ============ APP LOGIC ============ */
+let state = { screen:'home', domain:null, setId:null, mixed:false, qIndex:0, answers:[], order:[] };
+let sessionSetsCompleted = 0;
+let bestScores = {}; // setId -> best percent (in-memory, resets on reload)
+
+function questionsForSet(setId){ return QUESTIONS.filter(q=>q.set===setId); }
+function questionsForDomain(domainId){
+  const setIds = SETS.filter(s=>s.domain===domainId).map(s=>s.id);
+  return QUESTIONS.filter(q=>setIds.includes(q.set));
+}
+
+function goHome(){ state = { screen:'home', domain:null, setId:null, mixed:false, qIndex:0, answers:[], order:[] }; render(); }
+function openDomain(domainId){ state.screen='setlist'; state.domain=domainId; render(); }
+function startSet(setId){
+  const qs = questionsForSet(setId);
+  state = { screen:'quiz', domain:state.domain, setId, mixed:false, qIndex:0, answers:new Array(qs.length).fill(null), order:qs.map((_,i)=>i) };
+  render();
+}
+function startMixed(){
+  const order = QUESTIONS.map((_,i)=>i);
+  for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+  state = { screen:'quiz', domain:null, setId:null, mixed:true, qIndex:0, answers:new Array(order.length).fill(null), order };
+  render();
+}
+function currentPool(){ return state.mixed ? QUESTIONS : questionsForSet(state.setId); }
+
+function selectChoice(i){
+  const pool = currentPool();
+  const q = pool[state.order[state.qIndex]];
+  if(state.answers[state.qIndex] !== null) return; // already answered
+  state.answers[state.qIndex] = i;
+  render();
+}
+function nextQuestion(){
+  const pool = currentPool();
+  if(state.qIndex < pool.length-1){ state.qIndex++; render(); }
+  else { finishQuiz(); }
+}
+function finishQuiz(){
+  sessionSetsCompleted++;
+  const pool = currentPool();
+  let correct=0;
+  pool.forEach((q,i)=>{ if(state.answers[i]===q.correct) correct++; });
+  const pct = Math.round(100*correct/pool.length);
+  if(state.setId) bestScores[state.setId] = Math.max(bestScores[state.setId]||0, pct);
+  state.screen='results';
+  render();
+}
+function retrySet(){
+  if(state.mixed) startMixed(); else startSet(state.setId);
+}
+function backToSets(){ state.screen='setlist'; render(); }
+
+/* ============ RENDER ============ */
+function render(){
+  document.getElementById('sessionStats').textContent = `Sets completed this session: ${sessionSetsCompleted}`;
+  const app = document.getElementById('app');
+  if(state.screen==='home') app.innerHTML = renderHome();
+  else if(state.screen==='setlist') app.innerHTML = renderSetList();
+  else if(state.screen==='quiz') app.innerHTML = renderQuiz();
+  else if(state.screen==='results') app.innerHTML = renderResults();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderHome(){
+  let html = `<div class="section-title">Practice by Category</div>
+  <div class="section-sub">Based on the digital SAT Reading &amp; Writing framework — pick a domain to see its practice sets.</div>
+  <div class="domain-grid">`;
+  DOMAINS.forEach(d=>{
+    const qs = questionsForDomain(d.id);
+    const setIds = SETS.filter(s=>s.domain===d.id).map(s=>s.id);
+    const doneSets = setIds.filter(id=>bestScores[id]!==undefined).length;
+    html += `<div class="domain-card" style="--accent:${d.color}" onclick="openDomain('${d.id}')">
+      <h3>${d.name}</h3>
+      <p>${d.blurb}</p>
+      <div class="chip-row">${d.subtopics.map(s=>`<span class="chip">${s}</span>`).join('')}</div>
+      <div class="domain-progress"><b>${qs.length}</b> questions &middot; <b>${setIds.length}</b> sets &middot; ${doneSets}/${setIds.length} attempted</div>
+    </div>`;
+  });
+  html += `</div>
+  <div class="mixed-cta">
+    <div>
+      <h3>Full Mixed Practice</h3>
+      <p>${QUESTIONS.length} questions, shuffled across all four domains — simulates a real section.</p>
+    </div>
+    <button class="btn btn-light" onclick="startMixed()">Start Mixed Set →</button>
+  </div>`;
+  return html;
+}
+
+function renderSetList(){
+  const d = DOMAINS.find(x=>x.id===state.domain);
+  const sets = SETS.filter(s=>s.domain===state.domain);
+  let html = `<button class="back-link" onclick="goHome()">← All domains</button>
+  <div class="section-title">${d.name}</div>
+  <div class="section-sub">${d.blurb}</div>
+  <div class="set-list">`;
+  sets.forEach(s=>{
+    const qs = questionsForSet(s.id);
+    const best = bestScores[s.id];
+    html += `<div class="set-row">
+      <div class="info">
+        <h4>${s.title}</h4>
+        <p>${s.desc} &middot; ${qs.length} questions</p>
+      </div>
+      <div class="right">
+        <div class="best-score">${best!==undefined ? `<b>${best}%</b>best` : '<b>—</b>not started'}</div>
+        <button class="btn btn-primary" onclick="startSet('${s.id}')">${best!==undefined?'Retry':'Start'}</button>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function renderPassage(q){
+  if(!q.passage) return '';
+  if(typeof q.passage === 'string'){
+    return `<div class="passage">${q.passage}</div>`;
+  }
+  return `<div class="passage two-text">
+    <div><span class="label">Text 1</span>${q.passage.a}</div>
+    <div><span class="label">Text 2</span>${q.passage.b}</div>
+  </div>`;
+}
+
+function renderQuiz(){
+  const pool = currentPool();
+  const q = pool[state.order[state.qIndex]];
+  const answered = state.answers[state.qIndex];
+  const total = pool.length;
+  const setTitle = state.mixed ? 'Full Mixed Practice' : SETS.find(s=>s.id===state.setId).title;
+  const letters = ['A','B','C','D'];
+
+  let choicesHtml = '';
+  q.choices.forEach((c,i)=>{
+    let cls = 'choice';
+    if(answered!==null){
+      cls += ' disabled';
+      if(i===q.correct) cls += ' correct';
+      else if(i===answered) cls += ' incorrect';
+      else cls += ' dim';
+    }
+    choicesHtml += `<button class="${cls}" onclick="selectChoice(${i})" ${answered!==null?'disabled':''}>
+      <span class="letter">${letters[i]}</span><span>${c}</span>
+    </button>`;
+  });
+
+  let feedback = '';
+  if(answered!==null){
+    const isGood = answered===q.correct;
+    feedback = `<div class="feedback ${isGood?'good':'bad'}">
+      <b>${isGood ? 'Correct!' : `Not quite — the correct answer is ${letters[q.correct]}.`}</b>
+      ${q.explanation}
+    </div>`;
+  }
+
+  return `<button class="back-link" onclick="${state.mixed?'goHome()':'backToSets()'}">← ${state.mixed?'Home':'Back to sets'}</button>
+  <div class="quiz-header">
+    <div class="quiz-title">${setTitle} &middot; Question ${state.qIndex+1} of ${total}</div>
+    <div class="quiz-title">${q.tag||''}</div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" style="width:${100*(state.qIndex)/total}%"></div></div>
+  <div class="q-card">
+    <span class="q-tag">${q.tag}</span>
+    ${renderPassage(q)}
+    <div class="stem">${q.stem}</div>
+    <div class="choices">${choicesHtml}</div>
+    ${feedback}
+  </div>
+  <div class="quiz-footer">
+    <button class="btn btn-primary" onclick="nextQuestion()" ${answered===null?'disabled':''}>${state.qIndex===total-1?'See Results':'Next Question'} →</button>
+  </div>`;
+}
+
+function renderResults(){
+  const pool = currentPool();
+  let correct=0;
+  pool.forEach((q,i)=>{ if(state.answers[i]===q.correct) correct++; });
+  const pct = Math.round(100*correct/pool.length);
+  const letters=['A','B','C','D'];
+  const label = state.mixed ? 'Full Mixed Practice' : SETS.find(s=>s.id===state.setId).title;
+
+  let review = '';
+  pool.forEach((q,i)=>{
+    const ans = state.answers[i];
+    const good = ans===q.correct;
+    review += `<div class="review-item">
+      <div class="tag-row"><span class="status-pill ${good?'good':'bad'}">${good?'Correct':'Incorrect'}</span><span class="q-tag" style="margin:0;">${q.tag}</span></div>
+      ${renderPassage(q)}
+      <div class="stem">${q.stem}</div>
+      <div class="review-line">Your answer: <b>${letters[ans]}. ${q.choices[ans]}</b></div>
+      ${!good?`<div class="review-line">Correct answer: <b>${letters[q.correct]}. ${q.choices[q.correct]}</b></div>`:''}
+      <div class="review-explain">${q.explanation}</div>
+    </div>`;
+  });
+
+  return `<div class="result-hero">
+    <div class="section-sub" style="margin-bottom:0;">${label}</div>
+    <div class="score-big">${correct} / ${pool.length}</div>
+    <div class="score-sub">${pct}% correct</div>
+    <div class="result-actions">
+      <button class="btn btn-primary" onclick="retrySet()">Retry This Set</button>
+      <button class="btn btn-ghost" onclick="${state.mixed?'goHome()':'backToSets()'}">${state.mixed?'Back to Home':'Back to Sets'}</button>
+      <button class="btn btn-ghost" onclick="goHome()">All Domains</button>
+    </div>
+  </div>
+  <div class="section-title" style="font-size:18px;">Review Answers</div>
+  <div class="section-sub">Read the explanation for each question, especially the ones you missed.</div>
+  ${review}`;
+}
+
+render();
+</script>
+</body>
+</html>
