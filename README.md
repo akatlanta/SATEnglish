@@ -1,4 +1,4 @@
-# SAT English Practice
+# FREE SAT English Preparation 2026-27
 
 A free, single-page practice site for the digital SAT Reading & Writing section. No build step, no dependencies — just one self-contained `index.html`.
 
@@ -22,6 +22,14 @@ A free, single-page practice site for the digital SAT Reading & Writing section.
 Each question gives instant right/wrong feedback with an explanation, and each set ends with a score summary and full answer review. Answer-choice order is randomized on every page load so the correct answer isn't predictably in the same position.
 
 **Note:** scores/progress are session-only (kept in memory) and reset on page reload — there's no backend or database.
+
+## Feedback / suggestions
+
+The top bar has a **"Your Suggestions Please"** button that opens a small in-page form (name/email optional, category, message).
+
+On submit, the form first tries **[Formspree](https://formspree.io)** — a free form-backend service. It posts directly to a Formspree endpoint (`FORMSPREE_ENDPOINT` in `index.html`, currently `https://formspree.io/f/xbgrkqgo`), and Formspree emails the submission to whoever owns that form automatically, no dashboard setup required beyond creating the form once. (We tried Netlify Forms first, but Netlify's email notifications turned out to require a paid plan — Formspree's free tier includes real email notifications, so we switched.) If the Formspree request fails for any reason (offline, endpoint unreachable, page opened as a local file), the form falls back to opening a `mailto:` draft addressed to `akatlantajan12@gmail.com` instead.
+
+To change where submissions go: log into [formspree.io](https://formspree.io), open the form, and update its notification email in Settings — no code change needed. To point the site at a *different* Formspree form entirely (e.g. a new account), search `index.html` for `FORMSPREE_ENDPOINT` and swap in the new endpoint URL. To change the destination email used by the mailto fallback specifically, search for `SUGGESTIONS_EMAIL`.
 
 ## Running it locally
 
