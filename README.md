@@ -79,3 +79,16 @@ Each question is a plain JS object:
 ## How scoring works (implementation note)
 
 Mixed sets present questions in a shuffled order (`state.order`, built by `shuffledOrder()`), while `state.answers` is indexed by the *display position* a question was shown at, not by its position in the underlying pool array. Scoring and the results/review screen must pair `state.answers[i]` with `pool[state.order[i]]` (the question actually shown at step `i`) — comparing against `pool[i]` directly would silently mis-score shuffled sets. `finishQuiz()`, `renderResults()`, and `downloadResultsDoc()` all use the `state.order`-aware pairing; keep that pattern if you touch this code.
+
+## Content audit vs. the current digital SAT (Aug 2026)
+
+All 300 questions were checked against College Board's current official Reading & Writing framework (domains, subskills, ~25-150 word passage length, and the exact stem phrasing used for each question type, e.g. Rhetorical Synthesis's "bulleted notes + stated goal" format). The domain/subskill structure and stem conventions already matched closely. This pass found and fixed:
+
+- **A real rendering bug on every Cross-Text Connections question (25 total, 5 per set):** each `passage.a`/`passage.b` string had its own embedded "Text 1: " / "Text 2: " prefix, which duplicated the label the site already renders automatically. Fixed by stripping the embedded prefixes from the data.
+- **A stray broken `</br>` tag** in one Inferences question (Full Mixed Practice Set 4) that would have rendered as visible garbage text.
+- **One genuinely inconsistent explanation** (Set 2, thermohaline circulation question) that referenced the wrong choice numbers — rewritten for accuracy.
+- **One ambiguous Boundaries question** (scholarship committee) where two of the four choices were both grammatically defensible — replaced the weaker distractor so only one choice is correct.
+- **One factual correction**: a Rhetorical Synthesis note about the spread of papermaking said the Battle of Talas (751 CE) happened "near Samarkand" — it was actually fought near the Talas River; the captured papermakers were later brought to Samarkand. Corrected the note and its matching answer choice.
+- **Five narrative-fiction passages rewritten as informational/expository prose** (one in Set 1, four in Set 4 — arts/literature/language), since the current digital SAT's Reading & Writing passages are informational/nonfiction, not short fiction, even when the topic is art or music. Rewrote each to test the same skill (Central Ideas & Details / Inferences) with the same difficulty, just with real-world informational content instead of a fictional scene.
+
+**Not changed, but worth knowing:** the site currently has no *quantitative* Command of Evidence questions (the graph/table variant the real test also uses) — the site's passage renderer only supports text and two-text passages, not a chart/table. All 25 Command of Evidence questions here are the textual (quotation/finding) variant, which is valid but only half the picture. Also, each 60-question set is split evenly across the four domains (15/15/15/15, 25% each) rather than the official ~28%/26%/26%/20% weighting — close, but not an exact match. Both are optional future improvements, not defects in what's there today.
