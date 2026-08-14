@@ -21,7 +21,9 @@ A free, single-page practice site for the digital SAT Reading & Writing section.
 
 Each question gives instant right/wrong feedback with an explanation, and each set ends with a score summary and full answer review. Answer-choice order is randomized on every page load so the correct answer isn't predictably in the same position.
 
-**Note:** scores/progress are session-only (kept in memory) and reset on page reload — there's no backend or database.
+**Downloadable results (Word file)** — every results screen has a **"Download Word Summary"** button. It generates a `.doc` file entirely in the browser (no server, no upload) listing every question in the set: the passage, the question, all four choices with your answer and the correct answer marked, whether you got it right, and — for anything missed — an explanation of why your choice was wrong and why the correct answer is right. It opens directly in Microsoft Word, Google Docs, or LibreOffice.
+
+**Note:** scores/progress are session-only (kept in memory) and reset on page reload — there's no backend or database. The Word summary is a one-time snapshot generated at download time, not saved anywhere.
 
 ## Feedback / suggestions
 
@@ -59,3 +61,7 @@ Each question is a plain JS object:
 **Category sets:** live in the `QUESTIONS` array (search for `QUESTIONS.push`). Push more objects with an existing `set` id (`s1`–`s8`) to add to that set — the site groups and counts them automatically. To add a new category set, add an entry to the `SETS` array and give your new questions that set's `id`.
 
 **Mixed practice sets:** `MIX2`, `MIX3`, `MIX4`, `MIX5` are separate 60-item arrays (search for `const MIX2 =`, etc.), each with all objects tagged `set:'mix2'` / `'mix3'` / etc. `mix1` isn't a separate array — it's just the original 60 `QUESTIONS`. To add a 6th mixed set: create a new `MIX6` array, add it to `MIX_POOLS`, and add a matching entry to `MIXED_SETS`.
+
+## How scoring works (implementation note)
+
+Mixed sets present questions in a shuffled order (`state.order`, built by `shuffledOrder()`), while `state.answers` is indexed by the *display position* a question was shown at, not by its position in the underlying pool array. Scoring and the results/review screen must pair `state.answers[i]` with `pool[state.order[i]]` (the question actually shown at step `i`) — comparing against `pool[i]` directly would silently mis-score shuffled sets. `finishQuiz()`, `renderResults()`, and `downloadResultsDoc()` all use the `state.order`-aware pairing; keep that pattern if you touch this code.

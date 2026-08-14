@@ -3037,7 +3037,7 @@ function finishQuiz(){
   sessionSetsCompleted++;
   const pool = currentPool();
   let correct=0;
-  pool.forEach((q,i)=>{ if(state.answers[i]===q.correct) correct++; });
+  state.order.forEach((qi,i)=>{ if(state.answers[i]===pool[qi].correct) correct++; });
   const pct = Math.round(100*correct/pool.length);
   const key = state.mixId || state.setId;
   if(key) bestScores[key] = Math.max(bestScores[key]||0, pct);
@@ -3233,13 +3233,14 @@ function renderQuiz(){
 function renderResults(){
   const pool = currentPool();
   let correct=0;
-  pool.forEach((q,i)=>{ if(state.answers[i]===q.correct) correct++; });
+  state.order.forEach((qi,i)=>{ if(state.answers[i]===pool[qi].correct) correct++; });
   const pct = Math.round(100*correct/pool.length);
   const letters=['A','B','C','D'];
   const label = state.mixId ? MIXED_SETS.find(m=>m.id===state.mixId).title : SETS.find(s=>s.id===state.setId).title;
 
   let review = '';
-  pool.forEach((q,i)=>{
+  state.order.forEach((qi,i)=>{
+    const q = pool[qi];
     const ans = state.answers[i];
     const good = ans===q.correct;
     review += `<div class="review-item">
@@ -3258,6 +3259,7 @@ function renderResults(){
     <div class="score-sub">${pct}% correct</div>
     <div class="result-actions">
       <button class="btn btn-primary" onclick="retrySet()">Retry This Set</button>
+      <button class="btn btn-dark" onclick="downloadResultsDoc()">⬇ Download Word Summary</button>
       <button class="btn btn-ghost" onclick="${state.mixId?'goHome()':'backToSets()'}">${state.mixId?'Back to Home':'Back to Sets'}</button>
       <button class="btn btn-ghost" onclick="goHome()">All Domains</button>
     </div>
@@ -3265,6 +3267,80 @@ function renderResults(){
   <div class="section-title" style="font-size:18px;">Review Answers</div>
   <div class="section-sub">Read the explanation for each question, especially the ones you missed.</div>
   ${review}`;
+}
+
+function downloadResultsDoc(){
+  const pool = currentPool();
+  const letters = ['A','B','C','D'];
+  const label = state.mixId ? MIXED_SETS.find(m=>m.id===state.mixId).title : SETS.find(s=>s.id===state.setId).title;
+
+  const rows = state.order.map((qi,i)=>{
+    const q = pool[qi];
+    const ans = state.answers[i];
+    const good = ans===q.correct;
+    return { q, ans, good, num:i+1 };
+  });
+  const correct = rows.filter(r=>r.good).length;
+  const pct = Math.round(100*correct/pool.length);
+  const dateStr = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  function passageHtml(q){
+    if(!q.passage) return '';
+    if(typeof q.passage === 'string'){
+      return `<p style="font-style:italic;color:#444;">${q.passage}</p>`;
+    }
+    return `<p style="font-style:italic;color:#444;"><b>Text 1:</b> ${q.passage.a}</p><p style="font-style:italic;color:#444;"><b>Text 2:</b> ${q.passage.b}</p>`;
+  }
+
+  let body = '';
+  rows.forEach(r=>{
+    const q = r.q;
+    let choicesHtml = '';
+    q.choices.forEach((c,i)=>{
+      let marker = '';
+      if(i===q.correct && i===r.ans) marker = ' — Your answer (correct)';
+      else if(i===q.correct) marker = ' — Correct answer';
+      else if(i===r.ans) marker = ' — Your answer (incorrect)';
+      choicesHtml += `<p style="margin:2px 0 2px 20px;">${letters[i]}. ${c}${marker}</p>`;
+    });
+    body += `
+      <div style="margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid #ccc;">
+        <p style="margin:0 0 4px 0;"><b>Question ${r.num}</b> &nbsp; <span style="color:#555;">[${q.tag||''}]</span> &nbsp;
+          <span style="font-weight:bold;color:${r.good?'#1a7a1a':'#b00020'};">${r.good?'CORRECT':'INCORRECT'}</span></p>
+        ${passageHtml(q)}
+        <p style="margin:6px 0;">${q.stem}</p>
+        ${choicesHtml}
+        ${!r.good ? `<p style="margin:8px 0 2px 0;"><b>Why "${letters[r.ans]}" was wrong, and why "${letters[q.correct]}" is correct:</b></p>` : `<p style="margin:8px 0 2px 0;"><b>Explanation:</b></p>`}
+        <p style="margin:0;background:#f5f5f5;padding:6px;">${q.explanation}</p>
+      </div>`;
+  });
+
+  const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+  <head><meta charset="utf-8"><title>${label} - Results</title>
+  <!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
+  <style>
+    body{font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#1c2331;}
+    h1{font-size:18pt;margin-bottom:2px;}
+    h2{font-size:13pt;color:#1c2331;}
+  </style></head>
+  <body>
+    <h1>FREE SAT English Preparation — Practice Results</h1>
+    <p style="color:#555;margin-top:0;">${label} &middot; ${dateStr}</p>
+    <h2>Score: ${correct} / ${pool.length} (${pct}%)</h2>
+    <hr/>
+    ${body}
+  </body></html>`;
+
+  const blob = new Blob(['﻿', html], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeLabel = label.replace(/[^a-z0-9]+/gi,'-');
+  a.href = url;
+  a.download = `SAT-Practice-${safeLabel}-Results.doc`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
 }
 
 function renderSuggestions(){
