@@ -241,6 +241,17 @@
 
 <div class="container" id="app"></div>
 
+<!-- Hidden static form so Netlify's deploy-time scanner detects and registers this form.
+     Netlify only sees forms present in the raw HTML, not ones built by JavaScript at runtime —
+     this one is never shown; the real form (rendered in #app) submits to it via fetch(). -->
+<form name="suggestions" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="text" name="name" />
+  <input type="email" name="email" />
+  <select name="category"><option>Website / design</option></select>
+  <textarea name="message"></textarea>
+  <input type="text" name="bot-field" />
+</form>
+
 <footer>Original practice questions modeled on the digital SAT Reading &amp; Writing section. Not affiliated with College Board.</footer>
 
 <script>
@@ -3050,15 +3061,9 @@ function retrySet(){
 function backToSets(){ state.screen='setlist'; render(); }
 
 const SUGGESTIONS_EMAIL = 'akatlantajan12@gmail.com';
-function openSuggestions(){ state.screen='suggestions'; state.suggestSent=false; render(); }
-function submitSuggestion(event){
-  event.preventDefault();
-  const form = event.target;
-  const name = form.name.value.trim();
-  const email = form.email.value.trim();
-  const category = form.category.value;
-  const message = form.message.value.trim();
-  if(!message){ return false; }
+function openSuggestions(){ state.screen='suggestions'; state.suggestSent=false; state.suggestMethod=null; render(); }
+
+function mailtoFallback(name, email, category, message){
   const subject = `SAT Prep site suggestion: ${category}`;
   const bodyLines = [
     `Category: ${category}`,
@@ -3070,7 +3075,33 @@ function submitSuggestion(event){
   const mailto = `mailto:${SUGGESTIONS_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
   window.location.href = mailto;
   state.suggestSent = true;
+  state.suggestMethod = 'email';
   render();
+}
+
+function submitSuggestion(event){
+  event.preventDefault();
+  const form = event.target;
+  const name = form.name.value.trim();
+  const email = form.email.value.trim();
+  const category = form.category.value;
+  const message = form.message.value.trim();
+  if(!message){ return false; }
+
+  // Primary path: submit to Netlify Forms (works once this site is deployed on Netlify with
+  // the hidden "suggestions" form present in the page — Netlify then emails you automatically).
+  const body = new URLSearchParams(new FormData(form)).toString();
+  fetch('/', { method:'POST', headers:{ 'Content-Type':'application/x-www-form-urlencoded' }, body })
+    .then(res => {
+      if(!res.ok) throw new Error('Netlify Forms submit failed: ' + res.status);
+      state.suggestSent = true;
+      state.suggestMethod = 'netlify';
+      render();
+    })
+    .catch(() => {
+      // Fallback path: not running on Netlify (e.g. opened as a local file) — hand off to email app instead.
+      mailtoFallback(name, email, category, message);
+    });
   return false;
 }
 
@@ -3247,10 +3278,13 @@ function renderResults(){
 
 function renderSuggestions(){
   if(state.suggestSent){
+    const msg = state.suggestMethod === 'netlify'
+      ? `Your suggestion was sent — it'll land in our inbox shortly. Thanks for helping improve the site!`
+      : `Your email app should have opened with your suggestion pre-filled and addressed to us — just hit send there to submit it. If nothing opened, you can email us directly at <b>${SUGGESTIONS_EMAIL}</b>.`;
     return `<button class="back-link" onclick="goHome()">← Home</button>
     <div class="result-hero">
       <div class="score-big" style="font-size:28px;">Thanks!</div>
-      <div class="score-sub">Your email app should have opened with your suggestion pre-filled and addressed to us — just hit send there to submit it. If nothing opened, you can email us directly at <b>${SUGGESTIONS_EMAIL}</b>.</div>
+      <div class="score-sub">${msg}</div>
       <div class="result-actions">
         <button class="btn btn-primary" onclick="goHome()">Back to Home</button>
         <button class="btn btn-ghost" onclick="openSuggestions()">Submit Another Suggestion</button>
@@ -3259,8 +3293,9 @@ function renderSuggestions(){
   }
   return `<button class="back-link" onclick="goHome()">← Home</button>
   <div class="section-title">Your Suggestions Please</div>
-  <div class="section-sub">Want a change to the website, more questions on a topic, or a different practice format? Tell us here — it opens an email addressed to us with your note pre-filled.</div>
-  <form class="form-card" onsubmit="return submitSuggestion(event)">
+  <div class="section-sub">Want a change to the website, more questions on a topic, or a different practice format? Tell us here.</div>
+  <form class="form-card" name="suggestions" onsubmit="return submitSuggestion(event)">
+    <input type="hidden" name="form-name" value="suggestions">
     <div class="form-row">
       <label for="sg-name">Your name <span class="optional">(optional)</span></label>
       <input id="sg-name" name="name" type="text" placeholder="e.g. Priya">
